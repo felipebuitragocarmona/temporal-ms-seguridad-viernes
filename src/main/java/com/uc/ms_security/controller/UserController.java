@@ -34,7 +34,7 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("/{id}/profile")
+    @GetMapping("/{id}/detail")
     public UserDetailResponseDTO findByIdAndProfile(@PathVariable Long id) {
         return userService.findByIdWithProfile(id);
     }
