@@ -287,7 +287,7 @@ public class JwtConfig {
 
         decoder.setJwtValidator(
                 JwtValidators.createDefaultWithIssuer(
-                        "ms-security"
+                        "https://ms-security.local"
                 )
         );
 
@@ -302,6 +302,9 @@ No es necesario memorizar las clases Nimbus:
 JwtEncoder → firma y genera el JWT
 JwtDecoder → valida el JWT recibido
 ~~~
+
+El emisor debe ser una URI válida y debe coincidir exactamente entre el
+generador y el decoder. En este ejemplo usamos `https://ms-security.local`.
 
 ---
 
@@ -342,7 +345,7 @@ public class JwtService {
         Instant expiresAt = now.plus(TOKEN_DURATION);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("ms-security")
+                .issuer("https://ms-security.local")
                 .subject(user.getId().toString())
                 .issuedAt(now)
                 .expiresAt(expiresAt)
