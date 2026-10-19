@@ -54,4 +54,12 @@ public class User {
             fetch = FetchType.LAZY
     )
     private List<Session> sessions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<UserRole> userRoles = new ArrayList<>();
 }
