@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         HttpStatus status = switch (exception.getErrorCase()) {
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
             case ALREADY_EXISTS -> HttpStatus.CONFLICT;
-            case INVALID_OPERATION -> HttpStatus.BAD_REQUEST;
+            case INVALID_OPERATION -> HttpStatus.CONFLICT;
         };
 
         Map<String, String> error = new LinkedHashMap<>();
