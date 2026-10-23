@@ -2,11 +2,13 @@ package com.uc.ms_security.service;
 
 import com.uc.ms_security.dto.role.RoleRequestDTO;
 import com.uc.ms_security.dto.role.RoleResponseDTO;
+import com.uc.ms_security.dto.role.RolePermissionsResponseDTO;
 import com.uc.ms_security.entity.Role;
 import com.uc.ms_security.exception.ApplicationException;
 import com.uc.ms_security.exception.ErrorCase;
 import com.uc.ms_security.mapper.RoleMapper;
 import com.uc.ms_security.repository.RoleRepository;
+import com.uc.ms_security.repository.RolePermissionRepository;
 import com.uc.ms_security.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final RolePermissionRepository rolePermissionRepository;
     private final RoleMapper roleMapper;
 
     @Transactional
@@ -46,6 +49,17 @@ public class RoleService {
         return roleMapper.toResponseDTO(findEntityById(id));
     }
 
+    @Transactional(readOnly = true)
+    public RolePermissionsResponseDTO findByIdAndPermissions(Long id) {
+        Role role = roleRepository.findWithPermissionsById(id)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorCase.NOT_FOUND,
+                        "Rol no encontrado"
+                ));
+
+        return roleMapper.toPermissionsResponseDTO(role);
+    }
+
     @Transactional
     public RoleResponseDTO update(Long id, RoleRequestDTO dto) {
         Role role = findEntityById(id);
@@ -69,6 +83,13 @@ public class RoleService {
             throw new ApplicationException(
                     ErrorCase.INVALID_OPERATION,
                     "No se puede eliminar un rol que está asignado"
+            );
+        }
+
+        if (rolePermissionRepository.existsByRoleId(id)) {
+            throw new ApplicationException(
+                    ErrorCase.INVALID_OPERATION,
+                    "No se puede eliminar un rol que tiene permisos asignados"
             );
         }
 
